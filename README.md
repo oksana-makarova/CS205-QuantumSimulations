@@ -6,3 +6,9 @@ Team members:
 2. Gregory Cunningham
 3. Shelley Cheng
 4. Oksana Makarova
+
+## Academic Cluster Reproducibility 
+To run on academic cluster, run on the terminal the following command:
+```
+$ sbatch runScript.sh
+```
