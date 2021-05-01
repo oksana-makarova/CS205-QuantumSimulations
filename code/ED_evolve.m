@@ -3,10 +3,11 @@
 % Oksana, 04/30/2021
 
 
-function ED_evolve_block_diag(NN, M, XXZCoeff)
+function ED_evolve(NN, M, XXZCoeff)
 %NN = 7; % number of spins
 %M number of time points of interest
-%XXZCoeff - parameter to tune the Hamiltonian (set to 0 - Z state will never decay)
+%XXZCoeff - parameter to tune the Hamiltonian 
+%(Z state should never decay if disorder is 0; X and Y don't decay if XXZCoeff = 0)
 sx = 0.5*[0, 1; 1 0];
 sy = 0.5*[0 -1i; 1i 0];
 sz = 0.5*[1 0; 0 -1];
@@ -17,7 +18,7 @@ v1 = [0; 1];
 %% parameters
 a0 = 5;
 J0 = 10;
-Delta = 0.1; %variance of disorder 
+Delta = 0.01; %variance of disorder 
 %M = 1000;
 %h3 = 3;
 %t_pi = pi/(2*h3);
@@ -61,8 +62,8 @@ for i = 1:NN
 end
 
 %constructing Hamiltonian
-%ham = sparse(2^NN, 2^NN);
-ham = zeros(2^NN, 2^NN);
+ham = sparse(2^NN, 2^NN);
+%ham = zeros(2^NN, 2^NN);
 %% non-interacting part: disorder
 
 %added Normally distributed disorder of variance Delta
@@ -100,11 +101,6 @@ end
 [eigvecs, eigvals] = eig(full(ham), 'vector');
 %trans_ham = eigvecs * eigvals * inv(eigvecs);
 
-%matlab doesn't sort eigenvalues and eigenvectors for us and it causes
-%problems with coordinate transformations
-% [eigvals,ind] = sort(eigvals); 
-% eigvecs = eigvecs(:, ind);
-
 psiEig_i = eigvecs' * psi_i; %coordinate transformation
 psiEig_i_times = repmat(psiEig_i, 1, M);
 eigs_ts = eigvals * t;
@@ -119,8 +115,8 @@ norm_psi = vecnorm(psi_f_times);
 psi_f_times = bsxfun(@rdivide, psi_f_times, norm_psi);
 
 %% measure Z polarization in the most bruteforce way
-%SzN = sparse(2^NN, 2^NN);
-SN = zeros(2^NN, 2^NN);
+SN = sparse(2^NN, 2^NN);
+%SN = zeros(2^NN, 2^NN);
 
 %pick measurement basis
 if (theta == pi/2 && phi == 0) %along X for X initial state
@@ -163,9 +159,9 @@ ylim([-1.1 1.1])
 %     Rho_i = psi_f_times(:, i)*psi_f_times(:, i)';
 %     Rho_tot = Rho_tot + Rho_i; 
 % end
-Rho_i = psi_i*psi_i';
+%Rho_i = psi_i*psi_i';
 %Rho_avg = Rho_tot / M;
-Rho_f = psi_f_times(:, M)*psi_f_times(:, M)';
+%Rho_f = psi_f_times(:, M)*psi_f_times(:, M)';
 
 %both have to always be one: just a sanity check
 % Tr_init = trace(Rho_i)
