@@ -20,4 +20,4 @@ $ rm runtask.log
 $ rm slurm-*
 ```
 
-The CSVs will be generated in a file called testdir1. 
+The CSVs will be generated in a folder called testdir1. 
