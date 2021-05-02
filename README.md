@@ -8,7 +8,16 @@ Team members:
 4. Oksana Makarova
 
 ## Academic Cluster Reproducibility 
-To run on academic cluster, run on the terminal the following command:
+To use the academic cluster to run the quantum simulator and generate CSVs containing polarization information 
+for later processing, log into the academic cluster, then run on the terminal the following command:
 ```
-$ sbatch runScript.sh
+$ sbatch parallel.sbatch
 ```
+If necessary, you may need to first clean up files from previous run:
+```
+$ rm runtask.sh.*
+$ rm runtask.log
+$ rm slurm-*
+```
+
+The CSVs will be generated in a file called testdir1. 
