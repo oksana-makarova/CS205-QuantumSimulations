@@ -18,6 +18,7 @@ If necessary, you may need to first clean up files from previous run:
 $ rm runtask.sh.*
 $ rm runtask.log
 $ rm slurm-*
+$ rm -r testdir1
 ```
 
 The CSVs will be generated in a folder called testdir1. 
