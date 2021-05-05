@@ -155,13 +155,13 @@ end
 %Find the Y polarization
 Ypolarization = zeros(1, M);
 for i = 1:M
-    Ypolarization(i) = imag(psi_f_times(:, i)' * SY * psi_f_times(:, i)) *2/NN;
+    Ypolarization(i) = real(psi_f_times(:, i)' * SY * psi_f_times(:, i)) *2/NN;
 end
 
 %Find the X polarization
 Xpolarization = zeros(1, M);
 for i = 1:M
-    Xpolarization(i) = imag(psi_f_times(:, i)' * SX * psi_f_times(:, i)) *2/NN;
+    Xpolarization(i) = real(psi_f_times(:, i)' * SX * psi_f_times(:, i)) *2/NN;
 end
 
 % f1 = figure; close(f1);
@@ -200,7 +200,7 @@ mytime = toc;
 %Save 1 by (M + 3) matrix containing in order the simulation number, the 
 %time for the simulation to run, the type of calculation, 
 %and all M values in the calculation
-A = [simnum, mytime, 0, t;...
+A = ["Simnum", "Simtime","simtype", t;...
     simnum, mytime, 1, Xpolarization; ...
     simnum, mytime, 2, Ypolarization; ...
     simnum, mytime, 3, Zpolarization];
