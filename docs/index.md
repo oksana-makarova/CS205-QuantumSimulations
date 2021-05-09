@@ -16,12 +16,16 @@ Additional challenge is that the **output of the simulation is a wavefunction, w
 
 We decided to implement our project using **MATLAB** since it's excellent at handling matrix operations and allows us to capture physics of the problem. There are existing **Python libraries** for quantum simulations, such as [QuTiP](http://qutip.org/), and even cloud solutions that provide access to both classical and quantum simulators (check out amazing infrastructure that's provided by [IBM Q](https://www.ibm.com/quantum-computing/)). However, unlike Python, **MATLAB explicitly supports parallelization and accelerated computing with its own built-in librariesand hyperoptimized black-box functions**, so we think that MATLAB has more potential for fast computation of large systems. Additionally, [QuTiP relies on solving differential equations at different time points instead of solving eigenvalue problem](http://qutip.org/docs/3.1.0/guide/dynamics/dynamics-master.html), which makes it cubersome to simulate long-time system dyanmics, unlike in our solution where we can obtain system state at any time point with simple matrix multiplication.
 
-In the process of writing code that simulates a quantum system, we explored different functionalities of MATLAB Parallelization Toolbox and put together a [basic guide](https://oksana-makarova.github.io/CS205-QuantumSimulations/matlab_guide), so that other quantum reasearchers can build their own custom solution. 
+In the process of writing code that simulates a quantum system, **we explored different functionalities of MATLAB Parallelization Toolbox and put together a [basic guide](https://oksana-makarova.github.io/CS205-QuantumSimulations/matlab_guide)**, so that other quantum reasearchers can build their own custom solution. 
 
-Follow the links below for more detailed description
 
-## [Physcial Model Description](https://oksana-makarova.github.io/CS205-QuantumSimulations/Model_Description)
+## Below is the list of the subpage links which were mentioned in the text:
 
+### [Physcial Model Description](https://oksana-makarova.github.io/CS205-QuantumSimulations/Model_Description)
+### [MATLAB Parallelization Toolbox Guide](https://oksana-makarova.github.io/CS205-QuantumSimulations/matlab_guide)
+### [Benchmarking of the original code](https://oksana-makarova.github.io/CS205-QuantumSimulations/serial_code)
+### [Benchmarking of the paralllelized code]()
+### [Big Data processing with PySpark]()
 
 
 You can use the [editor on GitHub](https://github.com/oksana-makarova/CS205-QuantumSimulations/edit/om/docs/index.md) to maintain and preview the content for your website in Markdown files.
