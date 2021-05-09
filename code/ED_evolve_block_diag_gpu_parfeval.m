@@ -146,6 +146,8 @@ blk_sizes = arrayfun(@(z) nchoosek(NN, z), blk_sizes); %sizes of each of the blo
 parpool('local',gpuDeviceCount("available"));
 
 psi_f_times_blk_tot = zeros(2^NN, M); %initialize evolved wavefunction
+% blk_timings = zeros(NN+1,1);
+% par_timings = zeros(NN+1,1);
 
 for blk_num = 1:(NN+1)
    
@@ -156,13 +158,13 @@ for blk_num = 1:(NN+1)
     Ham_blk = Ham_big(selected_indx, selected_indx);
     psi_blk = psi_i(selected_indx);
     
-    eig_vals_split((first_indx + 1):(first_indx+blk_sizes(blk_num))) = eig(Ham_blk);
-    
+%     eig_vals_split((first_indx + 1):(first_indx+blk_sizes(blk_num))) = eig(Ham_blk);
+%     tic;
     [eigvecs_blk, eigvals_blk] = eig(full(Ham_blk));
-    
+%     blk_timings(blk_num) = toc;
     
     %evolution (gpu + parfeval)
-    %tic;
+%     tic;
     fevalMult = @(A,B)A*B;
     f = parfeval(fevalMult,1,eigvecs_blk',psi_blk);
     psiEig_i_blk = fetchOutputs(f); %coordinate transformation
@@ -182,8 +184,11 @@ for blk_num = 1:(NN+1)
     clear f;
     
     psi_f_times_blk_tot(selected_indx, :) = psi_f_times_blk;
-    %toc
+%     par_timings(blk_num) = toc;
 end
+
+% fprintf('Timings for Oksana matrix blocking eig [s]: %4.4f\n',sum(blk_timings));
+% fprintf('Timings for // matrix mults [s]: %4.4f\n',sum(par_timings));
 
 %normalization
 norm_psi_blk = vecnorm(psi_f_times_blk_tot);
