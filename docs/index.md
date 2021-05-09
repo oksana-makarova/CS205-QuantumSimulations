@@ -5,7 +5,7 @@
 - Michelle Chalupnik
 - Shelley Cheng
 - Oksana Makarova
-- 
+
 **Quantum computation** is a topic that gathered a lot of attention in the recent years. The main promise of quantum computing is the opportunity to **solve exponentially scaling problems in much shorter time and with much less memory**. It's possible due to the fundamental difference of "hardware" between classical and quantum computers. Instead of bits, quantum computers operate with **qubits (quantum bits)**, which are usually interacting two-level physical systems called spins. A computation is done by preparing all spins in a certain initial state, letting them interact(evolve) for some time, and then read out the final state of the system. There are a lot of various qubit realizations, such as cold atoms, ions, superconducting qubits, defects in solids and so on. One way to understand why quantum computers are so much better at solving exponentially scaling problems is that your simulator and your simulated system have the same underlying structure (imagine simulating a new material using interacting atoms instead of transistors!).
 
 However, large-scale quantum computers are still unavaliable, so researchers need to rely on classical simulators in their current work. Also, we need capability to model quantum systems in order to design an actually useful machine. 
