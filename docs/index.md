@@ -1,4 +1,6 @@
-## Welcome to GitHub Pages
+## Welcome to CS 205 Quantum Simulations Project
+
+[Model Description](https://oksana-makarova.github.io/CS205-QuantumSimulations/Model_Description)
 
 You can use the [editor on GitHub](https://github.com/oksana-makarova/CS205-QuantumSimulations/edit/om/docs/index.md) to maintain and preview the content for your website in Markdown files.
 
