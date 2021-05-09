@@ -4,10 +4,10 @@
 
 
 %% Initialize simulation parameters
-
+% tic;
 P.XXZCoeff = 1; % Hamiltonian of the form S.S + XXZCoeff (XX+YY-2ZZ)
 P.N = 6;      % Number of spins
-P.nIter = 5; % Number of iterations
+P.nIter = 1; % Number of iterations
 P.Alpha = 3; %scaling of interaction: 1/r^alpha
 P.SpatialDim = 3; %system dimension: 1D, 2D, 3D
 P.BoundaryConditions = 'Open'; % Periodic or Open
@@ -38,9 +38,21 @@ if strcmp(P.Simulator,'newED')
         
         %note that disorder is currently specified in ED_evolve_block_diag
         %itself and is currently set to 0
-        ED_evolve_block_diag(P.N, P.nTimePoints, P.XXZCoeff, JMat, P.InitStates)       
+        %%% NORMAL CASE (BELOW)
+        %ED_evolve_block_diag(P.N, P.nTimePoints, P.XXZCoeff, JMat, P.InitStates)
+        
+        %%% //, GPU CASES (BELOW)
+        %%% ED_evolve_block_diag_distribtued: distributed arrays (no gpu)
+        %%% ED_evolve_block_diag_gpu_parfeval: parfeval + gpu (Oksana LB)
+        %%% ED_evolve_block_diag_gpu_parfeval_lb: parfeval+gpu (Shelley LB)
+        ED_evolve_block_diag_distributed(P.N, P.nTimePoints, P.XXZCoeff, JMat, P.InitStates)
     end
 end
+% temp = toc;
+%Change the ... below to reflect what kind of sim [distributed (no cpu),
+%gpu with parfeval, or gpu with parfeval and load balancing
+% fprintf('Total timing for %4.4f spins and ... : %4.4f\n',P.N, temp);
+
 % %% Plot the results
 % if isfield(P, 'FigNum')
 %     set(0, 'DefaultAxesFontSize', 12)
@@ -52,5 +64,3 @@ end
 %     xlabel('time [ns]'); ylabel('x, y coherence')
 % 
 % end
-
-
