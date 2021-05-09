@@ -1,9 +1,15 @@
-## Welcome to CS 205 Quantum Simulations Project
+# Welcome to CS 205 Spring 2021 Quantum Simulations Project by Team 9!
+
+Quantum computation is a topic that gathered a lot of attention in the recent years. The main promise of quantum computing is the opportunity to solve exponentially scaling problems in much shorter time and with much less memory. It's possible due to the fundamental difference of "hardware" between classical and quantum computers. 
+
+However, large-scale quantum computers are still unavaliable, so researchers need to rely on classical simulators in their on-going work. Also, we need capability to model quantum systemsin order to design an actually useful machine. 
+
+Simualting a quantum system on a classical machine is a hard problem because each extra particle doubles the problem size [See this page for more information](https://oksana-makarova.github.io/CS205-QuantumSimulations/Model_Description). Behaviour of quantum systems can be described with basic matrix operations, such as matrix multiplication and eigenvalue problem, making this problem tractable. Fortunately, those operations are not only parallelizable between different cores and nodes, but also are perfect for being done using GPUs, giving us hope to be able to simulate large quantum systems in relatively short times.
 
 
-Did the change go through?
 
-[Model Description](https://oksana-makarova.github.io/CS205-QuantumSimulations/Model_Description)
+
+## [Model Description](https://oksana-makarova.github.io/CS205-QuantumSimulations/Model_Description)
 
 You can use the [editor on GitHub](https://github.com/oksana-makarova/CS205-QuantumSimulations/edit/om/docs/index.md) to maintain and preview the content for your website in Markdown files.
 
