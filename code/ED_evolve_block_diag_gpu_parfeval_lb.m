@@ -41,8 +41,8 @@ psi0 = cos(theta/2)*v0 + sin(theta/2)*exp(1i*phi)*v1;
 psi_i = psi0;
 
 %convert to GPU
-%psi_i = gpuArray(psi_i);
-%psi0 = gpuArray(psi0);
+psi_i = gpuArray(psi_i);
+psi0 = gpuArray(psi0);
 
 for i = 2:NN
     psi_i = kron(psi0, psi_i);
@@ -148,8 +148,6 @@ parpool('local',gpuDeviceCount("available"));
 
 Ham_cell = {};
 psi_cell = {};
-fIndx_cell = {};
-sIndx_cell = {};
 psi_f_times_blk_tot = zeros(2^NN, M); %initialize evolved wavefunction
 
 for blk_num = 1:(NN+1)
@@ -160,23 +158,25 @@ for blk_num = 1:(NN+1)
     %add to cell arrays
     Ham_cell{end+1} = Ham_big(selected_indx, selected_indx);
     psi_cell{end+1} = psi_i(selected_indx);
-    
-    fIndx_cell{end+1} = first_indx;
-    sIndx_cell{end+1} = selected_indx;
 end
 
-[eigvec_cell,eigval_cell] = eig_load_balanced(NN,Ham_cell);
+% tic;
+[eigvec_cell,eigval_cell,psi_cellB] = eig_load_balanced(NN,Ham_cell,psi_cell);
+% temp = toc;
+% fprintf('Timing for eig load balancing [s]: %4.4f\n',temp);
     
+blk_tot_iter = 1;
+% tic;
 for k = 1:length(eigvec_cell)
     %evolution (gpu + parfeval)
-    %tic;
     fevalMult = @(A,B)A*B;
-    f = parfeval(fevalMult,1,eigvec_cell{k}',psi_cell{k});
+    f = parfeval(fevalMult,1,eigvec_cell{k}',psi_cellB{k});
     psiEig_i_blk = fetchOutputs(f); %coordinate transformation
     clear f;
     psiEig_i_times_blk = repmat(psiEig_i_blk, 1, M);
-    f = parfeval(fevalMult,1,diag(eigval_cell{k}),t);
-    eigs_ts_blk =  fetchOutputs(f);
+    
+    f = parfeval(fevalMult,1,eigval_cell{k},t);
+    eigs_ts_blk = fetchOutputs(f);
     clear f;
     evolver_blk = exp(-1i * eigs_ts_blk);
     
@@ -188,9 +188,17 @@ for k = 1:length(eigvec_cell)
     psi_f_times_blk = fetchOutputs(f);
     clear f;
     
-    psi_f_times_blk_tot(sIndx_cell{k}, :) = psi_f_times_blk;
-    %toc
+    if (blk_tot_iter == 1)
+        psi_f_times_blk_tot(blk_tot_iter:size(psi_f_times_blk,1), :) = ...
+            psi_f_times_blk;
+    else
+        psi_f_times_blk_tot(blk_tot_iter:blk_tot_iter+size(psi_f_times_blk,1)-1,:) = ...
+            psi_f_times_blk;
+    end
+    blk_tot_iter = blk_tot_iter + size(psi_f_times_blk,1);
 end
+% temp = toc;
+% fprintf('Timing for // matrix mults [s]: %4.4f\n',temp);
 
 %normalization
 norm_psi_blk = vecnorm(psi_f_times_blk_tot);
@@ -198,20 +206,20 @@ psi_f_times_blk_tot = bsxfun(@rdivide, psi_f_times_blk_tot, norm_psi_blk);
     
 
 %% measure Z polarization in the most bruteforce way
-SN = sparse(2^NN, 2^NN);
+SN = sparse(size(psi_f_times_blk_tot,1), size(psi_f_times_blk_tot,1));
 %SN = zeros(2^NN, 2^NN);
 
 %pick measurement basis
 if (theta == pi/2 && phi == 0) %along X for X initial state
-    for i = 1:NN
+    for i = 1:log2(size(psi_f_times_blk_tot,1))
         SN = SN + oper_at(i).sx;
     end
 elseif (theta == pi/2 && phi == pi/2) %along Y for Y initial state
-    for i = 1:NN
+    for i = 1:log2(size(psi_f_times_blk_tot,1))
         SN = SN + oper_at(i).sy;
     end
 else %along Z otherwise
-    for i = 1:NN
+    for i = 1:log2(size(psi_f_times_blk_tot,1))
         SN = SN + oper_at(i).sz;
     end
 end
