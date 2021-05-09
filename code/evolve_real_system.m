@@ -38,7 +38,8 @@ if strcmp(P.Simulator,'newED')
         
         %note that disorder is currently specified in ED_evolve_block_diag
         %itself and is currently set to 0
-        %%% NORMAL CASE (BELOW)
+        %%% SERIAL CASE (UNCOMMENT BOTH LINES BELOW)
+        %maxNumCompThreads(1);
         %ED_evolve_block_diag(P.N, P.nTimePoints, P.XXZCoeff, JMat, P.InitStates)
         
         %%% //, GPU CASES (BELOW)
