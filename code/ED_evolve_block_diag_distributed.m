@@ -137,11 +137,11 @@ blk_sizes = arrayfun(@(z) nchoosek(NN, z), blk_sizes); %sizes of each of the blo
 
 % Step 2: form blocks, find their eigenvalues and eigenvectors, evolve
 % corresponding pieces of the wavefunction
-
+parpool('local');
 psi_f_times_blk_tot = distributed(zeros(2^NN, M)); %initialize evolved wavefunction
+% par_timings = zeros(NN+1,1);
 
 for blk_num = 1:(NN+1)
-   
     first_indx = sum(blk_sizes(1:(blk_num-1))); %first state index for this block
     selected_indx = blocking_indx((first_indx + 1):(first_indx + blk_sizes(blk_num)));
     
@@ -149,11 +149,12 @@ for blk_num = 1:(NN+1)
     Ham_blk = Ham_big(selected_indx, selected_indx);
     psi_blk = psi_i(selected_indx);
     
-    eig_vals_split((first_indx + 1):(first_indx+blk_sizes(blk_num))) = eig(Ham_blk);
+%     eig_vals_split((first_indx + 1):(first_indx+blk_sizes(blk_num))) = eig(Ham_blk);
     
     [eigvecs_blk, eigvals_blk] = eig(Ham_blk, 'vector');
     
     %evolution
+%     tic;
     psiEig_i_blk = eigvecs_blk' * psi_blk; %coordinate transformation
     psiEig_i_times_blk = repmat(psiEig_i_blk, 1, M);
     eigs_ts_blk = eigvals_blk * t;
@@ -193,7 +194,10 @@ for blk_num = 1:(NN+1)
 
         psi_f_times_blk_tot(selected_indx, :) = psi_f_times_blk;
     end
+%     par_timings(blk_num) = toc;
 end
+%fprintf('Timings for // matrix mults [s]: %4.4f\n',sum(par_timings));
+
 
 %normalization
 norm_psi_blk = vecnorm(psi_f_times_blk_tot);
@@ -224,7 +228,9 @@ end
 %final_polarization = real(psi_f_times(:, M)' * SN * psi_f_times(:, M))
 polarization = distributed(zeros(1, M));
 for i = 1:M
-    polarization(i) = real(psi_f_times_blk_tot(:, i)' * SN * psi_f_times_blk_tot(:, i)) *2/NN;
+    spmd
+        polarization(i) = real(psi_f_times_blk_tot(:, i)' * SN * psi_f_times_blk_tot(:, i)) *2/NN;
+    end
 end
 
 f1 = figure; close(f1);
