@@ -1,6 +1,6 @@
-clear all;
-close all;
-clc;
+%clear all;
+%close all;
+%clc;
 
 %--------------------------------------------------------------------------
 % Purpose of this code is to test parallelization and processing methods
@@ -43,15 +43,15 @@ clc;
 
 
 %% Testing Processing Methods (parfor, parfeval, spmd)
-n = 50; %# of trials
+%n = 50; %# of trials
 
 % %Make struct for timings
 % t1 = struct('parforTime',zeros(n,1),'parfevalTime',zeros(n,1),...
 %     'spmdTime',zeros(n,1),'serialTime',zeros(n,1));
 % 
 % Initialize parallel pool (use all 4 cores) 
-lepool = parpool('local',4);
-workers = lepool.NumWorkers;
+%lepool = parpool('local',4);
+%workers = lepool.NumWorkers;
 % 
 % %%% It's known that spmd is better for operations while parfor/parfeval
 % %%%   are better for generating matrices. Let's try both out, starting with
@@ -95,7 +95,7 @@ workers = lepool.NumWorkers;
 %     eigns = {mats3{:}}; %don't know what this does explicitly
 %     t1.spmdTime(i) = toc;
 %     
-%     %jk we ain't done yet. Let's see how the serial implementation does
+%     %Let's see how the serial implementation does
 %     %   Time the creation of 4 random matrices
 %     tic;
 %     for j = 1:length(N)
@@ -185,7 +185,7 @@ workers = lepool.NumWorkers;
 % 
 % 
 % %% Testing Parallelization Methods (distributed array, codistribtued array)
-% %%% Co-distribtued need a lil more love. Apparently, you can control the
+% %%% Apparently, you can control the
 % %%% block sizing of the co-distributed array, so their may be an optimal
 % %%% block size for performing this eig function evaluation.
 % %%%
@@ -194,40 +194,7 @@ workers = lepool.NumWorkers;
 % %%% sims
 % %%%
 % %%% After that, re-do the timings as usual with the new optimal block size.
-% %%%
-% %%% NOTES: it seems like the optimal blocking size for random matrices is
-% %%% around 30-35% of one of the matrix dimensions (assuming a square
-% %%% matrix). Going to re-run now using random symmetric matrices via A*A',
-% %%% where A = rand(x). Goal is to confirm if this 30-35% interval still
-% %%% holds.
-% %%%
-% %%% NOTES: Okay so for random symmetric matrices the game is a lil
-% %%% different. The 30-35% interval doesn't hold, and in fact the time
-% %%% taken seems to peak around 30%. Lowest values occur around 25-30%, and
-% %%% for N = 10 the region of 30-40% is the highest. However, everything
-% %%% runs a whole lot faster with these symmetric matrices. Going to try my
-% %%% luck with larger N values (9,10,11,12).
-% %%%
-% %%% NOTES: Litty, it looks like the symmetric random matrix is the way to
-% %%% go cuz N = 12 ran pretty smoothly. For N = 11 and higher, the golden
-% %%% range for matrix blocking was about 35-40%. Going to keep gambling and
-% %%% try an even larger range of N values (11,12,13,14). Bold moves only,
-% %%% we'll see if my computer can keep up.
-% %%%
-% %%% NOTES: Computer could in fact NOT keep up, crashed after 12 spins, but
-% %%% the 35-40% range still held. I guess for larger matrices, the larger
-% %%% block size is better because you can reduce the amount of communication
-% %%% that each worker does while still maintaining the same amount of
-% %%% computation between workers for the final result. For smaller
-% %%% matrices, faster execution seems to come from smaller block sizes.
-% %%% For N = 7-10, using 25-30% works but then for N > 10 we need 35-40%
-% %%% (with the block size from N = 10 to N = 11 being increased by a factor
-% %%% of ~ 3 rather than 2). Maybe because the size of the memory need / used
-% %%% for larger matrices increases? Either way, it seems like probably
-% %%% sticking to the 25-40% range will be the goal for the sims, so going to
-% %%% re-run now with a 32% block size and compare the serial and distribtued
-% %%% timings.
-% 
+
 % numBlocksweep = 50;
 % cdistTimings = struct('N11',zeros(numBlocksweep,1),...
 %     'N12',zeros(numBlocksweep,1),'N13',zeros(numBlocksweep,1),...
@@ -330,82 +297,83 @@ workers = lepool.NumWorkers;
 %%% the eigenvalues / vectors of the matrix, but let's see how the new
 %%% distribtued arrays work with matrix multiplication
 
-t4 = struct('parforTime',zeros(n,1),'parfevalTime',zeros(n,1),...
-    'distTime',zeros(n,1),'codistTime',zeros(n,1),...
-    'serialTime',zeros(n,1));
-%clear N;    
-N = 12;
+% t4 = struct('parforTime',zeros(n,1),'parfevalTime',zeros(n,1),...
+%     'distTime',zeros(n,1),'codistTime',zeros(n,1),...
+%     'serialTime',zeros(n,1));
+% %clear N;    
+% N = 12;
+% 
+% testMat = rand(2^N);
+% 
+% fprintf('\nSizing for random square matrix multiplication (2^ ): %4.2f \n',N);
+% disp('-------------------------------------------');
+% 
+% 
+% for i = 1:n    
+%     %parfor
+%     tic;
+%     result1 = eye(2^N);
+%     parfor j = 1:workers
+%         result1 = result1*(testMat*testMat'); %reduction variable across workers (maybe)
+%     end
+%     t4.parforTime(i) = toc;
+%     
+%     %parfeval
+%     fevalMult = @(A,B)A*B;
+%     tic;
+%     f = parfeval(fevalMult,1,testMat,testMat');
+%     result2 =  fetchOutputs(f);
+%     t4.parfevalTime(i) = toc;
+%     clear f;
+%     
+%     %distributed
+%     tic;
+%     A = distributed(testMat);
+%     B = distributed(testMat');
+%     result3 = A*B;
+%     t4.distTime(i) = toc;
+%     clear A B;
+%     
+%     
+%     %co-distributed (32% block size)
+%     tic;
+%     spmd(4)
+%         A = codistributed(testMat,...
+%             codistributor2dbc([2,2],cast(0.32*(2^N),'uint8')))
+%         B = codistributed(testMat',...
+%             codistributor2dbc([2,2],cast(0.32*(2^N),'uint8')))
+%         result4 = A*B;
+%     end
+%     t4.codistTime(i) = toc;
+%     clear A B;
+%     
+%     
+%     %serial. Do matrix muliplication on 4 matrices of size 2^N x 2^N
+%     tic;
+%     result5 = testMat*testMat';
+%     t4.serialTime(i) = toc;
+%     
+%     fprintf('Iteration %4.1f complete \n',i);
+%     pause
+% end
+% 
+% disp('-------------------------------------------');
+% fprintf('Average time using parfor over %4.1f iterations: %4.4fs \n',...
+%     n,mean(t4.parforTime))
+% fprintf('Average time using parfeval over %4.1f iterations: %4.4fs \n',...
+%     n,mean(t4.parfevalTime))
+% fprintf('Averge time using distributed arrays over %4.1f iterations: %4.4fs \n',...
+%     n,mean(t4.distTime))
+% fprintf('Averge time using co-distributed arrays over %4.1f iterations: %4.4fs \n',...
+%     n,mean(t4.codistTime))
+% fprintf('Averge serial time over %4.1f iterations: %4.4fs \n',...
+%     n,mean(t4.serialTime))
 
-testMat = rand(2^N);
-
-fprintf('\nSizing for random square matrix multiplication (2^ ): %4.2f \n',N);
-disp('-------------------------------------------');
-
-
-for i = 1:n    
-    %parfor
-    tic;
-    result1 = eye(2^N);
-    parfor j = 1:workers
-        result1 = result1*(testMat*testMat'); %reduction variable across workers (maybe)
-    end
-    t4.parforTime(i) = toc;
-    
-    %parfeval
-    fevalMult = @(A,B)A*B;
-    tic;
-    f = parfeval(fevalMult,1,testMat,testMat');
-    result2 =  fetchOutputs(f);
-    t4.parfevalTime(i) = toc;
-    clear f;
-    
-    %distributed
-    tic;
-    A = distributed(testMat);
-    B = distributed(testMat');
-    result3 = A*B;
-    t4.distTime(i) = toc;
-    clear A B;
-    
-    
-    %co-distributed (32% block size)
-    tic;
-    spmd(4)
-        A = codistributed(testMat,...
-            codistributor2dbc([2,2],cast(0.32*(2^N),'uint8')))
-        B = codistributed(testMat',...
-            codistributor2dbc([2,2],cast(0.32*(2^N),'uint8')))
-        result4 = A*B;
-    end
-    t4.codistTime(i) = toc;
-    clear A B;
-    
-    
-    %serial. Do matrix muliplication on 4 matrices of size 2^N x 2^N
-    tic;
-    result5 = testMat*testMat';
-    t4.serialTime(i) = toc;
-    
-    fprintf('Iteration %4.1f complete \n',i);
-    pause
-end
-
-disp('-------------------------------------------');
-fprintf('Average time using parfor over %4.1f iterations: %4.4fs \n',...
-    n,mean(t4.parforTime))
-fprintf('Average time using parfeval over %4.1f iterations: %4.4fs \n',...
-    n,mean(t4.parfevalTime))
-fprintf('Averge time using distributed arrays over %4.1f iterations: %4.4fs \n',...
-    n,mean(t4.distTime))
-fprintf('Averge time using co-distributed arrays over %4.1f iterations: %4.4fs \n',...
-    n,mean(t4.codistTime))
-fprintf('Averge serial time over %4.1f iterations: %4.4fs \n',...
-    n,mean(t4.serialTime))
 
 
 %--------------------------------------------------------------------------
 
 % Close pool
-delete(gcp);
+% delete(gcp);
 %% Helper Functions
 
