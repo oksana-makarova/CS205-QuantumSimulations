@@ -35,6 +35,6 @@ parallel="parallel --delay 0.2 -j $SLURM_NTASKS --joblog runtask.log --resume"
 #
 #   srun --exclusive -N1 -n1 ./runtask.sh arg1:1 > runtask.1
 #
-$parallel "$srun ./runtask.sh arg1:{1} > runtask.sh.{1}" ::: {1..4}
+$parallel "$srun ./runtask.sh arg1:{1} > runtask.sh.{1}" ::: {1..1000}
 
 #adapted from: https://rcc.uchicago.edu/docs/running-jobs/srun-parallel/index.html
