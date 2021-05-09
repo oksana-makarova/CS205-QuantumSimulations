@@ -2,7 +2,7 @@
 #
 #SBATCH -J test
 #SBATCH --mail-type=ALL
-#SBATCH --mail-user=gcunningham@g.harvard.edu
+#SBATCH --mail-user=username@g.harvard.edu
 #SBATCH -o output.out
 #SBATCH -e output.err
 #SBATCH -p gpu 
@@ -13,4 +13,4 @@
 
 module load matlab/R2021a-fasrc01
 
-matlab -nodisplay -nosplash < test4.m get_couplings.m ED_evolve_block_diag_gpu_parfeval_lb.m eig_load_balanced.m
+matlab -nodisplay -nosplash < evolve_real_system.m get_couplings.m ED_evolve_block_diag_gpu_parfeval_lb.m eig_load_balanced.m
