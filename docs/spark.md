@@ -42,7 +42,8 @@ The CSVs will be generated in a folder in the same directory called testdir_spar
 $ zip -r testdir_spark.zip testdir_spark
 ```
 Then download it from the file explorer on the academic cluster: 
-! [ ] (readme_imgs/fileexplorer_oncluster.png)
+
+! [ ] (figs/fileexplorer_oncluster.png)
 
 
 Spin up an AWS instance following the steps in lab 9, and follow those steps to install spark locally as well. Choose a c4.xlarge. Use scp to copy testdir_spark.zip, polarization_avg_spark.py, and polz_avg_test_nospark.py to the AWS instance. Unzip testdir_spark.zip. Then run
@@ -87,7 +88,7 @@ With 2 and 4 modified as needed.
 csvs with the averaged polarizations, as well as with the times, will be saved in testdir_spark. 
 
 ## Parallel (non) speedup
-! [ ] (readme_imgs/spark_timing.png)
+! [ ] (figs/spark_timing.png)
 
 
 #### Reproducibility 
