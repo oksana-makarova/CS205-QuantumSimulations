@@ -1,4 +1,29 @@
 # Technical description of code
+## Entire code
+Matlab and Bash files:
+evolve_real_system.m - main file for simulating the physics of our system. Use this file to specify things such as number of spins, number of time steps, and type of evolution method (described below)
+ED_evolve_block_diag.m - serial implementation of system evolution. No parallelization methods are introduced, and does not use GPU. Use for comparison with other evolution methods
+get_couplings.m - !!!!
+gpuPar.sbatch - a bash script for submitting evolve_real_system.m to the academic cluster. 
+
+Instructions: 
+Upload entire repo to the academic cluster and cd into the ‘code’ folder. Open parallel.sbatch and modify the username@g.harvard.edu to your specific harvard email. Modify the last line to include different helper functions such as eig_load_balanced.m and other parallelization methods for ED_evolve. Customizations include:
+Number of gpus (if applicable)
+Size of memory
+Run gpuPar.sbatch on the cluster as: 
+	```
+$ sbatch gpuPar.sbatch
+```
+	Check outputs and errors (respectively via): 
+	```
+	$ vim output.out
+	$ vim output.err
+```
+If you get the error “Batch script contains DOS line breaks (\r\n) instead of expected UNIX line breaks (\n)” the run the following command:
+```
+$ dos2unix sbatch gpuPar.sbatch
+```
+## Parallelization of Matrix Operations
 
 Matlab files:
 ED_evolve_block_diag_distributed.m - parallelization method for system evolution using distributed and co-distributed arrays. This method focuses on parallelizing matrix multiplication by distributing data amongst workers in a parallel pool, and is not compatible with GPU simulations. 
