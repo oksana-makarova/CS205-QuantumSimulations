@@ -8,7 +8,7 @@ General statement of the problem is that we want to see how quantum systems evol
 
 Once the initial wavefunction is evolved and we got the final wavefunction, it needs to be postprocessed to extract physical quantity of interest. To do that, we do expectation value calculation with an operator of the observable. In our simulation, we're interested in checking polarization of the final state along X, Y, and/or Z axes, so the operators of the observables are Sx, Sy, Sz.  
 
-Since we can simulate a very small number of spins, we'll need to average over many possible spin configurations to approximate what we expect to see from an actual big spin system. For example, strength of interaction between the spins changes with the distance between the spins, so we would be interested in averaging over many random spatial spin configurations. 
+Since we only can simulate small numbers of spins, we'll need to average over many possible spin configurations to approximate what we expect to see from an actual big spin system. For example, strength of interaction between the spins changes with the distance between the spins, so we would be interested in averaging over many random spatial spin configurations. 
 
 The flowchart below provides the basic outline of the computation that is done in our code:
 
@@ -19,7 +19,7 @@ Translated to code lines of `ED_evolve_block_diag_serial.m`:
 - Diagonalization: 116 for the big matrix or 165 for blocks
 - Final state generation: 118-129 for the big matrix or 168-187 for blocks
 - Measurement: 192-218
-- Generation of random spin locations/disorder values is done in `get_couplings.m` and in lines 82-93
+- Generation of random spin locations values is done in `get_couplings.m` 
 
 ## XXZ Hamiltonians
 
@@ -33,11 +33,15 @@ Although we limit ourselves to this class of Hamiltonians, they capture a large 
 - for XXZCoeff = 0 none of the polarizations should decay since S.S term commutes with the Hamiltonian
 - in all other cases we expect slower or faster decay of X and Y polarizations of X and Y initial states. You might need to change evolution time to see it 
 
+Here is an example of an X polarization plot that was produced for 10 spins with XXZCoeff = 0 and no disorder. We can see that it's decaying instead of staying fixed at 1 (note that polarization value is normalized by the number of spins).
+
+<img src="figs/xpol.png" alt="x Polarization" class="inline"/>
+
 ## Working with Block-Diagonal Matrices
 
 Let's walk through what polarization conservation means for our Hamiltonian. We'll use bit-string notation where 0 corresponds to spin down and 1 to spin up. If you prepare all your spins in state up (bit string 1111...1 of length N) they will stay like that forever because decay is not allowed. Same holds for all spins down (bit string 0000...0 of length N) since an excitation isn't allowed to appear with our Hamiltonian. Things get more interesting if we have one excitation (one spin up) in the system. Now, that allowed states are 1000...0, 0100...0, 00100...0, ..., 0000..01: excitation can hop around, so we get N possible allowed states. With two excitations we will get N choose 2 possible strings with two 1s and N-2 zeros: 11000..0, 011000...0, 101000...0, ..., 000..011. When we write out our Hamiltonian in the matrix form, its rows and columns are actually numbered according to those basis states, with off-diagonal elements corresponding to couplings between states. If it's impossible to go from the state of the row and to the state of the column that off-diagonal element is zero. Now, we can see that we get N+1 blocks of sizes N choose k (corresponding to k = 0, 1, 2, ..., N excitations) in our Hamiltonian: transitions are only allowed within the blocks but not between them, so blocks are padded by zeros. 
 
-When we generate an XXZ Hamiltonian, it won't by default be in the block-diagonal form since basis vectors are in the incorrect order, so we need to rearrange matrix elements to bring the Hamiltonian to the desired form. In order to do that, we find out which indices correspond to which blocks and then select corresponding elements from the big Hamiltonian matrix. See example below that shows how a block with one excitation is selected out of the big Hamiltonian for 3 spins:
+When we generate an XXZ Hamiltonian, it won't by default be in the block-diagonal form since basis vectors are in the incorrect order, so we need to rearrange matrix elements to bring the Hamiltonian to the desired form. In order to do that, we find out which indices correspond to which blocks and then select corresponding elements from the big Hamiltonian matrix. See example below that shows how a block with one excitation (framed) is selected out of the big Hamiltonian for 3 spins:
 
 <img src="figs/bases.png" alt="block formation" class="inline"/>
 
