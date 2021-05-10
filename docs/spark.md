@@ -1,17 +1,19 @@
 # PySpark for Postprocessing
 
-## Associated Files
+## Technical Description of Code
+
+### Associated Files
 - *runtask.sh* - a bash script for submitting ED_evolve_csv.m to the academic cluster
 - *parallel.sbatch* - a bash script for submitting many runtask.sh tasks in parallel
-- *ED_evolve_csv.m* - A non-block diagonal implementation for the quantum simulator, used for the purpose of generating test CSV files for testing spark - speedup
+- *ED_evolve_csv.m* - A non-block diagonal implementation for the quantum simulator, used for the purpose of generating test CSV files for testing PySpark - speedup
 - *polarization_avg_spark.py* - a PySpark script (parallel) for averaging polarizations from CSV files from many runs of the quantum simulator with random initial conditions 
 - *polz_avg_test_nospark.py* - a python script using pandas (serial) for averaging polarizations from CSV files from many runs of the quantum simulator with random initial conditions 
 
-## Run Instructions
+### Run Instructions
 
 Here are instructions for running the PySpark tests for the quantum simulator. More detailed reproducibility information is in the section below. 
 
-To use the academic cluster to run the CSV test for the quantum simulator and generate CSVs containing polarization information for processing in spark, log into the academic cluster, click Clusters-> _FAS-RC Shell Access, and clone the repo into the cluster. Cd into the code directory, then run on the terminal the following command:
+To use the academic cluster to run the CSV test for the quantum simulator and generate CSVs containing polarization information for processing in PySpark, log into the academic cluster, click Clusters-> _FAS-RC Shell Access, and clone the repo into the cluster. Cd into the code directory, then run on the terminal the following command:
 ```
 $ sbatch parallel.sbatch
 ```
@@ -45,14 +47,14 @@ Then download it from the file explorer on the academic cluster:
 
 <img src="figs/fileexplorer_oncluster.png" alt="hi" class="inline"/>
 
-Spin up an AWS instance following the steps in lab 9, and follow those steps to install spark locally as well. Choose a c4.xlarge. Use scp to copy testdir_spark.zip, polarization_avg_spark.py, and polz_avg_test_nospark.py to the AWS instance. Then run
+Spin up an AWS instance following the steps in lab 9, and follow those steps to install PySpark locally as well. Choose a c4.xlarge. Use scp to copy testdir_spark.zip, polarization_avg_spark.py, and polz_avg_test_nospark.py to the AWS instance. Then run
 ```
 $ sudo apt-get install unzip
 $ unzip testdir_spark.zip
 $ sudo apt install python
 ```
 
-To run the serial, non-spark script polz_avg_test_nospark.py (the spark version does not use pandas! But the serial version does), we will need to install some python packages. In the command line, run
+To run the serial, non-spark script polz_avg_test_nospark.py (the PySpark version does not use pandas! But the serial version does), we will need to install some python packages. In the command line, run
 ```
 $ sudo apt install python-pip
 $ pip install pandas
@@ -63,13 +65,13 @@ Finally, to submit the completely serial, pandas version as a test, use the comm
 ```
 $ python polz_avg_test_nospark.py testdir_spark
 ```
-And to submit the parallel spark version, use the command
+And to submit the parallel PySpark version, use the command
 ```
 $ spark-submit polarization_avg_spark.py testdir_spark
 ```
 
 
-Lastly, we can try running the code on a spark cluster. To submit on a spark cluster, follow the steps from lab 10. We use a m4.xlarge, as used in lab 10. SSH into the spark cluster terminal, upload testdir_spark, and unzip, as explained above. The same libraries mentioned above will need to be loaded in. Open port 22 on the master security group by adding an SSH rule with port 22 and source 0.0.0.0/0, then scp to copy in polarization_avg_spark.py. 
+Lastly, we can try running the code on a Spark cluster. To submit on a Spark cluster, follow the steps from lab 10. We use a m4.xlarge, as used in lab 10. SSH into the Spark cluster terminal, upload testdir_spark, and unzip, as explained above. The same libraries mentioned above will need to be loaded in. Open port 22 on the master security group by adding an SSH rule with port 22 and source 0.0.0.0/0, then scp to copy in polarization_avg_spark.py. 
 Run
 ```
 $ hadoop fs -put testdir_spark
@@ -88,13 +90,14 @@ With 2 and 4 modified as needed.
 
 csvs with the averaged polarizations, as well as with the times, will be saved in testdir_spark. 
 
-## Parallel (non) speedup
+## Performance Evaluation
+### Parallel (non-)speedup
 <img src="figs/spark_timing.png" alt="hi" class="inline"/>
-This plot shows the execution times for different numbers of simulation runs, given N (number of spins) is 4 and M (number of timesteps) is 1000. One can see the spark versions take much longer than the pandas version. More discussion is in the "Challenges" section below. 
+This plot shows the execution times for different numbers of simulation runs, given N (number of spins) is 4 and M (number of timesteps) is 1000. One can see the PySpark versions take much longer than the pandas version. More discussion is in the "Challenges" section below. 
 
-#### Reproducibility 
+### Reproducibility 
 
-The preceding plots were produced using the academic cluster, then using AWS instances or an AWS spark cluster. To time the spark portions, I used the timer on my phone (since the code ran slow enough to make this feasible). 
+The preceding plots were produced using the academic cluster, then using AWS instances or an AWS Spark cluster. To time the Spark portions, I used the timer on my phone (since the code ran slow enough to make this feasible). 
 
 
 Reproducibility information for academic cluster portion: 
@@ -137,7 +140,7 @@ Scala code runner version 2.11.12 -- Copyright 2002-2017, LAMP/EPFL
 pyspark 2.2.0  
 
 
-Reproducibility information for AWS spark cluster:
+Reproducibility information for AWS Spark cluster:
 Replicability information:
 I followed the steps in lab 10 to create a Spark cluster on Amazon EMR.  
 Model: Intel(R) Xeon(R) CPU E5-2686 v4
@@ -157,7 +160,7 @@ Java:
 openjdk version "1.8.0_282"  
 OpenJDK Runtime Environment (build 1.8.0_282-b08)  
 OpenJDK 64-Bit Server VM (build 25.282-b08, mixed mode)  
-Pyspark 2.4.4  
+pyspark 2.4.4  
 
 Latency:  65 ms  
 Bandwidth:  900 Hz  
@@ -165,9 +168,9 @@ Bandwidth:  900 Hz
 
 ## Challenging Aspects
 
-- It is worth noting that the overhead for starting up spark is quite great. When submitting only 10 or 100 csv files to be averaged on the AWS machine (plot above), it took about 10 seconds using pyspark in local mode but only 0.9 seconds using the serial pandas version polz_avg_test_nospark.py. And even worse, it took 53 seconds on the spark cluster with 4 cores and 2 workers. 
+- It is worth noting that the overhead for starting up PySpark is quite great. When submitting only 10 or 100 csv files to be averaged on the AWS machine (plot above), it took about 10 seconds using PySpark in local mode but only 0.9 seconds using the serial pandas version polz_avg_test_nospark.py. And even worse, it took 53 seconds on the PySpark cluster with 4 cores and 2 workers. 
 
-- It’s also important to note that the number of columns is restricted when using spark. When I tried running polarization_average_spark.py with 10,000 columns (meaning 10,000 time steps) I ran into an error that stated the constant pool had grown past JVM limit of 0xFFFF. It makes sense that the number of columns would be limited, though, since spark is more suited for datasets with many rows rather than many columns. 
+- It’s also important to note that the number of columns is restricted when using PySpark. When I tried running polarization_average_spark.py with 10,000 columns (meaning 10,000 time steps) I ran into an error that stated the constant pool had grown past JVM limit of 0xFFFF. It makes sense that the number of columns would be limited, though, since PySpark is more suited for datasets with many rows rather than many columns. 
 
-- Overall spark seems to be a bad tool for collating and averaging across the three polarization measurements when the number of time divisions is large (100 to 1000) and when the number of simulations run is relatively small (1000 or so). If we increased the number of simulations to average across, spark might become a better tool. However, because of the poor performance, we left the spark portion as a standalone and did not integrate with the rest of the code.
-
+## Final Thoughts
+- Overall PySpark seems to be a bad tool for collating and averaging across the three polarization measurements when the number of time divisions is large (100 to 1000) and when the number of simulations run is relatively small (1000 or so). If we increased the number of simulations to average across, PySpark might become a better tool. However, because of the poor performance, we left the PySpark portion as a standalone and did not integrate with the rest of the code.
