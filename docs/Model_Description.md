@@ -12,7 +12,7 @@ Since we can simulate a very small number of spins, we'll need to average over m
 
 The flowchart below provides the basic outline of the computation that is done in our code:
 
-<img src="figs/flowchart.png" alt="hi" class="inline"/>
+<img src="figs/flowchart.png" alt="calculation flow" class="inline"/>
 
 Translated to code lines of `ED_evolve_block_diag_serial.m`:
 - Prepare initial state: 42-111
@@ -37,8 +37,11 @@ Although we limit ourselves to this class of Hamiltonians, they capture a large 
 
 Let's walk through what polarization conservation means for our Hamiltonian. We'll use bit-string notation where 0 corresponds to spin down and 1 to spin up. If you prepare all your spins in state up (bit string 1111...1 of length N) they will stay like that forever because decay is not allowed. Same holds for all spins down (bit string 0000...0 of length N) since an excitation isn't allowed to appear with our Hamiltonian. Things get more interesting if we have one excitation (one spin up) in the system. Now, that allowed states are 1000...0, 0100...0, 00100...0, ..., 0000..01: excitation can hop around, so we get N possible allowed states. With two excitations we will get N choose 2 possible strings with two 1s and N-2 zeros: 11000..0, 011000...0, 101000...0, ..., 000..011. When we write out our Hamiltonian in the matrix form, its rows and columns are actually numbered according to those basis states, with off-diagonal elements corresponding to couplings between states. If it's impossible to go from the state of the row and to the state of the column that off-diagonal element is zero. Now, we can see that we get N+1 blocks of sizes N choose k (corresponding to k = 0, 1, 2, ..., N excitations) in our Hamiltonian: transitions are only allowed within the blocks but not between them, so blocks are padded by zeros. 
 
-When we generate an XXZ Hamiltonian, it won't by default be in the block-diagonal form since basis vectors are in the incorrect order, so we need to rearrange matrix elements to bring the Hamiltonian to the desired form. In order to do that, we find out which indices correspond to which blocks and then select corresponding elements from the big Hamiltonian matrix. 
-(lines 138-143 and 153-160 of `ED_evolve_block_diag_serial.m`):
+When we generate an XXZ Hamiltonian, it won't by default be in the block-diagonal form since basis vectors are in the incorrect order, so we need to rearrange matrix elements to bring the Hamiltonian to the desired form. In order to do that, we find out which indices correspond to which blocks and then select corresponding elements from the big Hamiltonian matrix. See example below that shows how a block with one excitation is selected out of the big Hamiltonian for 3 spins:
+
+<img src="figs/bases.png" alt="block formation" class="inline"/>
+
+Code implementation: lines 138-143 and 153-160 of `ED_evolve_block_diag_serial.m`:
 ```
 all_states = de2bi(0:2^NN-1, 'left-msb'); %our states are binary numbers with 0/1 <->spin up/down
 exc_in_a_row = sum(all_states, 2);
