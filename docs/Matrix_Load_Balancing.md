@@ -9,7 +9,7 @@ Matlab and bash files for standalone code:
   - Change "--mail-user=" to your email if you want to be notified when it's done
   - Requires a compute cluster with 3 gpus (FAS OnDemand cluster)
 
-  Run this on the cluster using the command:
+Run this on the cluster using the command:
 ```javascript
 $ sbatch slurm
 ```
