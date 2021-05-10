@@ -26,6 +26,7 @@ In the process of writing code that simulates a quantum system, **we explored di
 ### [Benchmarking of the original code](https://oksana-makarova.github.io/CS205-QuantumSimulations/serial_code)
 ### [Benchmarking of the paralllelized code]()
 ### [Big Data processing with PySpark]()
+### [GPU-accelerated diagonalization](https://oksana-makarova.github.io/CS205-QuantumSimulations/Matrix_Load_Balancing)
 
 
 You can use the [editor on GitHub](https://github.com/oksana-makarova/CS205-QuantumSimulations/edit/om/docs/index.md) to maintain and preview the content for your website in Markdown files.
