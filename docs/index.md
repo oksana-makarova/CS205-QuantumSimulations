@@ -21,11 +21,11 @@ In the process of writing code that simulates a quantum system, **we explored di
 
 ## Below is the list of the subpage links which were mentioned in the text:
 
-### [Physcial Model Description](https://oksana-makarova.github.io/CS205-QuantumSimulations/Model_Description)
+### [Physical Model Description](https://oksana-makarova.github.io/CS205-QuantumSimulations/Model_Description)
 ### [MATLAB Parallelization Toolbox Guide](https://oksana-makarova.github.io/CS205-QuantumSimulations/matlab_guide)
 ### [Benchmarking of the original code](https://oksana-makarova.github.io/CS205-QuantumSimulations/serial_code)
-### [Benchmarking of the paralllelized code]()
-### [Big Data processing with PySpark]()
+### [Benchmarking of the parallelized code]()
+### [Big Data processing with PySpark](https://oksana-makarova.github.io/CS205-QuantumSimulations/spark)
 ### [GPU-accelerated diagonalization](https://oksana-makarova.github.io/CS205-QuantumSimulations/Matrix_Load_Balancing)
 
 
