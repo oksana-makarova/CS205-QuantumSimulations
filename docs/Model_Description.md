@@ -27,7 +27,7 @@ Evolving an arbitrary system of N particles requires diagonalization of a 2<sup>
 
 Presence of the symmetry means that the system has some conserved quantities, which can't change during the evolution. In our case, we work with a class of so-called XXZ Hamiltonians(S.S + XXZCoefficient*(SxSx + SySy - 2SzSz)) that conserve polarization or number of excitations in the system (you can think of it as of the total number of spin ups). 
 
-Although we limit ourselves to this class of Hamiltonians, they capture a large variety of physical systems due to XXZCoefficient variable. Let's discuss some of the results that we expect (you can check them by uncommenting plotting portion of  `ED_evolve_block_diag_serial.m` (lines 222-226)):
+Although we limit ourselves to this class of Hamiltonians, they capture a large variety of physical systems due to XXZCoefficient variable, which is a real number. Let's discuss some of the results that we expect (you can check them by uncommenting plotting portion of  `ED_evolve_block_diag_serial.m` (lines 222-226) and running `evolve_real_system_serial.m` with different values of P.XXZCoeff ([see this page for instructions](https://oksana-makarova.github.io/CS205-QuantumSimulations/serial_code))):
 
 - Z polarization should never change for any values of XXZCoeff since it's a conserved quantity
 - for XXZCoeff = 0 none of the polarizations should decay since S.S term commutes with the Hamiltonian
