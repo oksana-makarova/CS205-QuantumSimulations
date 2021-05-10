@@ -166,6 +166,10 @@ Latency:  65 ms
 Bandwidth:  900 Hz  
 
 
+## Tests
+Tests are available here: 
+https://github.com/oksana-makarova/CS205-QuantumSimulations/tree/main/testdir_spark
+
 ## Challenging Aspects
 
 - It is worth noting that the overhead for starting up PySpark is quite great. When submitting only 10 or 100 csv files to be averaged on the AWS machine (plot above), it took about 10 seconds using PySpark in local mode but only 0.9 seconds using the serial pandas version polz_avg_test_nospark.py. And even worse, it took 53 seconds on the PySpark cluster with 4 cores and 2 workers. 
