@@ -70,6 +70,15 @@ And to submit the parallel PySpark version, use the command
 $ spark-submit polarization_avg_spark.py testdir_spark
 ```
 
+To change the number of local cores when running Spark locally, one can open polarization_avg_spark.py and modify the following line: 
+```
+conf = SparkConf().setMaster('local').setAppName('Polarization Calculator')
+```
+to 
+```
+conf = SparkConf().setMaster('local[n]').setAppName('Polarization Calculator')
+```
+where n is the desired number of local cores. 
 
 Lastly, we can try running the code on a Spark cluster. To submit on a Spark cluster, follow the steps from lab 10. We use a m4.xlarge, as used in lab 10. SSH into the Spark cluster terminal, upload testdir_spark, and unzip, as explained above. The same libraries mentioned above will need to be loaded in. Open port 22 on the master security group by adding an SSH rule with port 22 and source 0.0.0.0/0, then scp to copy in polarization_avg_spark.py. 
 Run
@@ -91,9 +100,17 @@ With 2 and 4 modified as needed.
 csvs with the averaged polarizations, as well as with the times, will be saved in testdir_spark. 
 
 ## Performance Evaluation
-### Parallel (non-)speedup
+### Parallel Speedup
 <img src="figs/spark_timing.png" alt="hi" class="inline"/>
-This plot shows the execution times for different numbers of simulation runs, given N (number of spins) is 4 and M (number of timesteps) is 1000. One can see the PySpark versions take much longer than the pandas version. More discussion is in the "Challenges" section below. 
+The plot above shows the execution times for different numbers of simulation runs, given N (number of spins) is 4 and M (number of timesteps) is 100. One can see the PySpark versions take much longer than the pandas version for number of iterations less than 10,000. The cluster PySpark took longer than 30 minutes to load in the data (via -put) for iterations equal to 10,000, and so is not included. Reproducibility information is below. 
+
+
+<img src="figs/spark_speedup.png" alt="hi" class="inline"/>
+The plot above shows the speedups for different numbers of simulation runs, given N (number of spins) is 4 and M (number of timesteps) is 100. One can see the PySpark versions have a speedup less than 1 (compared to the pandas version) for for number of iterations less than 10,000. The cluster PySpark took longer than 30 minutes to load in the data (via -put) for iterations equal to 10,000, and so is not included. Reproducibility information is below. 
+
+
+<img src="figs/spark_local.png" alt="hi" class="inline"/>
+The plot above shows the speedups (compared to the pandas version) for the PySpark version running locally on an AWS instance (reproducibility information below) for different numbers of local cores, given N (number of spins) is 4 and M (number of timesteps) is 100, and 10,000 iterations. There is significant increase in speedup as number of cores increase. Plotting is stopped at 4 cores as the machine used had 4 physical cores. 
 
 ### Reproducibility 
 
@@ -167,15 +184,14 @@ Bandwidth:  900 Hz
 
 
 ## Tests
-Tests are available here: 
-https://github.com/oksana-makarova/CS205-QuantumSimulations/tree/main/testdir_spark
+Tests are available >a  href "https://github.com/oksana-makarova/CS205-QuantumSimulations/tree/main/testdir_spark">link here </a>.  
 
 ## Challenging Aspects
 
-- It is worth noting that the overhead for starting up PySpark is quite great. When submitting only 10 or 100 csv files to be averaged on the AWS machine (plot above), it took about 10 seconds using PySpark in local mode but only 0.9 seconds using the serial pandas version polz_avg_test_nospark.py. And even worse, it took 53 seconds on the PySpark cluster with 4 cores and 2 workers. 
+- It is worth noting that the overhead for starting up PySpark is quite great. When submitting only 10 or 100 csv files to be averaged on the AWS machine (plot above), it took about 10 seconds using PySpark in local mode but only 0.9 seconds using the serial pandas version polz_avg_test_nospark.py. And even worse, it took 53 seconds on the PySpark cluster with 4 cores and 2 workers. We finally did see speedup when averaging and sorting across 10,000 when using spark in local mode. 
 
 - It’s also important to note that the number of columns is restricted when using PySpark. When I tried running polarization_average_spark.py with 10,000 columns (meaning 10,000 time steps) I ran into an error that stated the constant pool had grown past JVM limit of 0xFFFF. It makes sense that the number of columns would be limited, though, since PySpark is more suited for datasets with many rows rather than many columns. 
 
 ## Final Thoughts
-- Overall PySpark seems to be a bad tool for collating and averaging across the three polarization measurements when the number of time divisions is large (100 to 1000) and when the number of simulations run is relatively small (1000 or so). If we increased the number of simulations to average across, PySpark might become a better tool. However, because of the poor performance, we left the PySpark portion as a standalone and did not integrate with the rest of the code.
-- For future work, it would be interesting to see if expanding the number of calculations performed per simulation to produce longer datasets, and reducing the number of timesteps could potentially lead to some advantage in using Spark. However, this seems unlikely unless the number of rows in the datasets became orders of magnitude larger. 
+- Overall PySpark seems to be a bad tool for collating and averaging across the three polarization measurements when the number of time divisions is large (100 to 1000) and when the number of simulations run is relatively small (1000 or so). However, for 10,000 iterations, PySpark becomes the better tool. However, because of the poor performance with lower number of iterations, we left the PySpark portion as a standalone and did not integrate with the rest of the code.
+- For future work, it would be interesting to see if expanding the number of calculations performed per simulation (adding in additional observables besides total polarization to calculate at each timestep) to produce longer datasets, and reducing the number of timesteps could potentially lead to more advantage in using Spark. 
