@@ -21,6 +21,12 @@ Evolving an arbitrary system of N particles requires diagonalization of a 2<sup>
 
 Presence of the symmetry means that the system has some conserved quantities, which can't change during the evolution. In our case, we work with a class of so-called XXZ Hamiltonians(S.S + XXZCoefficient*(SxSx + SySy - 2SzSz)) that conserve polarization or number of excitations in the system (you can think of it as of the total number of spin ups). 
 
+Although we limit ourselves to this class of Hamiltonians, they capture a large variety of physical systems due to XXZCoefficient variable. Let's discuss some of the results that we expect (you can check them by uncommenting plotting portion of  `ED_evolve_block_diag_serial.m` (lines 222-226)):
+
+- Z polarization should never change for any values of XXZCoeff since it's a conserved quantity
+- for XXZCoeff = 0 none of the polarizations should decay since S.S term commutes with the Hamiltonian
+- in all other cases we expect slower or faster decay of X and Y polarizations of X and Y initial states. You might need to change evolution time to see it 
+
 ## Working with Block-Diagonal Matrices
 
 Let's walk through what polarization conservation means for our Hamiltonian. We'll use bit-string notation where 0 corresponds to spin down and 1 to spin up. If you prepare all your spins in state up (bit string 1111...1 of length N) they will stay like that forever because decay is not allowed. Same holds for all spins down (bit string 0000...0 of length N) since an excitation isn't allowed to appear with our Hamiltonian. Things get more interesting if we have one excitation (one spin up) in the system. Now, that allowed states are 1000...0, 0100...0, 00100...0, ..., 0000..01: excitation can hop around, so we get N possible allowed states. With two excitations we will get N choose 2 possible strings with two 1s and N-2 zeros: 11000..0, 011000...0, 101000...0, ..., 000..011. When we write out our Hamiltonian in the matrix form, its rows and columns are actually numbered according to those basis states, with off-diagonal elements corresponding to couplings between states. If it's impossible to go from the state of the row and to the state of the column that off-diagonal element is zero. Now, we can see that we get N+1 blocks of sizes N choose k (corresponding to k = 0, 1, 2, ..., N excitations) in our Hamiltonian: transitions are only allowed within the blocks but not between them, so blocks are padded by zeros. 
