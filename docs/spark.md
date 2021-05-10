@@ -1,11 +1,11 @@
 # PySpark for Postprocessing
 
 ## Associated Files
-runtask.sh - a bash script for submitting ED_evolve_csv.m to the academic cluster
-parallel.sbatch - a bash script for submitting many runtask.sh tasks in parallel
-ED_evolve_csv.m - A non-block diagonal implementation for the quantum simulator, used for the purpose of generating test CSV files for testing spark speedup
-polarization_avg_spark.py - a PySpark script (parallel) for averaging polarizations from CSV files from many runs of the quantum simulator with random initial conditions 
-polz_avg_test_nospark.py - a python script using pandas (serial) for averaging polarizations from CSV files from many runs of the quantum simulator with random initial conditions 
+- *runtask.sh* - a bash script for submitting ED_evolve_csv.m to the academic cluster
+- *parallel.sbatch* - a bash script for submitting many runtask.sh tasks in parallel
+- *ED_evolve_csv.m* - A non-block diagonal implementation for the quantum simulator, used for the purpose of generating test CSV files for testing spark - speedup
+- *polarization_avg_spark.py* - a PySpark script (parallel) for averaging polarizations from CSV files from many runs of the quantum simulator with random initial conditions 
+- *polz_avg_test_nospark.py* - a python script using pandas (serial) for averaging polarizations from CSV files from many runs of the quantum simulator with random initial conditions 
 
 ## Run Instructions
 
@@ -32,7 +32,7 @@ And modify the arguments of ED_evolve_csv in following line:
 ```
 matlab -nosplash -nodisplay -r "ED_evolve_csv(4, 1000, 0, $PARALLEL_SEQ, '$MYDIR/testdir_spark')"
 ```
-Here, I’ve set the number of qubits to 4 (since we are just testing the averaging portion of the code, rather than the GPU acceleration), and the number of time steps to 1000. If you get an error saying runtask.sh will not execute, try running:
+Here, I’ve set the number of qubits to 4 (since we are just testing the averaging portion of the code, rather than the GPU acceleration), and the number of time steps to 1000. These can be changed if desired. If you get an error saying runtask.sh will not execute, try running:
 ```
 $ chmod u+x runtask.sh
 ```
@@ -45,21 +45,21 @@ Then download it from the file explorer on the academic cluster:
 
 <img src="figs/fileexplorer_oncluster.png" alt="hi" class="inline"/>
 
-Spin up an AWS instance following the steps in lab 9, and follow those steps to install spark locally as well. Choose a c4.xlarge. Use scp to copy testdir_spark.zip, polarization_avg_spark.py, and polz_avg_test_nospark.py to the AWS instance. Unzip testdir_spark.zip. Then run
+Spin up an AWS instance following the steps in lab 9, and follow those steps to install spark locally as well. Choose a c4.xlarge. Use scp to copy testdir_spark.zip, polarization_avg_spark.py, and polz_avg_test_nospark.py to the AWS instance. Then run
 ```
 $ sudo apt-get install unzip
 $ unzip testdir_spark.zip
 $ sudo apt install python
 ```
 
-To run the serial, non-spark version for comparison (the spark version does not use pandas! But the serial version does), we will need to install some python packages. In the command line, run
+To run the serial, non-spark script polz_avg_test_nospark.py (the spark version does not use pandas! But the serial version does), we will need to install some python packages. In the command line, run
 ```
 $ sudo apt install python-pip
 $ pip install pandas
 
 ```
 
-Finally, to submit the completely serial version as a test, use the command
+Finally, to submit the completely serial, pandas version as a test, use the command
 ```
 $ python polz_avg_test_nospark.py testdir_spark
 ```
@@ -67,7 +67,9 @@ And to submit the parallel spark version, use the command
 ```
 $ spark-submit polarization_avg_spark.py testdir_spark
 ```
-To submit on a spark cluster, follow the steps from lab 10. We use a m4.xlarge, as used in lab 10. SSH into the spark cluster terminal, upload testdir_spark, and unzip, as explained above. The same libraries mentioned above will need to be loaded in. Open port 22 on the master security group by adding an SSH rule with port 22 and source 0.0.0.0/0, then scp polarization_avg_spark.py. 
+
+
+Lastly, we can try running the code on a spark cluster. To submit on a spark cluster, follow the steps from lab 10. We use a m4.xlarge, as used in lab 10. SSH into the spark cluster terminal, upload testdir_spark, and unzip, as explained above. The same libraries mentioned above will need to be loaded in. Open port 22 on the master security group by adding an SSH rule with port 22 and source 0.0.0.0/0, then scp to copy in polarization_avg_spark.py. 
 Run
 ```
 $ hadoop fs -put testdir_spark
@@ -82,12 +84,13 @@ Then, run
 ```
 $ spark-submit --num-executors 2 --executor-cores 4 polarization_avg_spark.py testdir_spark
 ```
-With 2 and 4 modified as needed. 
+With 2 and 4 modified as needed.  
 
 csvs with the averaged polarizations, as well as with the times, will be saved in testdir_spark. 
 
 ## Parallel (non) speedup
 <img src="figs/spark_timing.png" alt="hi" class="inline"/>
+This plot shows the execution times for different numbers of simulation runs, given N (number of spins) is 4 and M (number of timesteps) is 1000. One can see the spark versions take much longer than the pandas version. More discussion is in the "Challenges" section below. 
 
 #### Reproducibility 
 
@@ -105,17 +108,10 @@ Clock rate: 2300.061 MHz
 Cache memory: L1d cache: 16K, L1i cache: 64K, L2 cache: 2048K, L3 cache: 6144K   
 Main memory: 128GB  
 
-For this problem, I used the FAS OnDemand Academic Cluster. 
-
 Operating System Version: CentOS Linux 7 (Core)   
 Kernel Version: Linux 3.10.0-1127.18.2.el7.x86_64 
 Compiler (name and version):   
-gcc version: gcc (GCC) 9.3.0  
-
-
-To configure, I loaded in the following libraries: 
-module load gcc/9.3.0-fasrc01
-module load openmpi/4.0.5-fasrc01
+matlab/R2021a-fasrc01
 
 
 Reproducibility information for AWS single node:
@@ -171,7 +167,7 @@ Bandwidth:  900 Hz
 
 - It is worth noting that the overhead for starting up spark is quite great. When submitting only 10 or 100 csv files to be averaged on the AWS machine (plot above), it took about 10 seconds using pyspark in local mode but only 0.9 seconds using the serial pandas version polz_avg_test_nospark.py. And even worse, it took 53 seconds on the spark cluster with 4 cores and 2 workers. 
 
-- It’s also important to note that the number of columns is restricted when using Spark. When I tried running with 10,000 columns (from 10,000 time steps) I ran into an error that stated the constant pool had grown past JVM limit of 0xFFFF. It makes sense that the number of columns would be limited, though, since Spark is more suited for datasets with many rows rather than many columns. 
+- It’s also important to note that the number of columns is restricted when using spark. When I tried running polarization_average_spark.py with 10,000 columns (meaning 10,000 time steps) I ran into an error that stated the constant pool had grown past JVM limit of 0xFFFF. It makes sense that the number of columns would be limited, though, since spark is more suited for datasets with many rows rather than many columns. 
 
-- Overall Spark seems to be a bad tool for collating and averaging across the three polarization measurements when the number of time divisions is large (100 to 1000) and when the number of simulations run is relatively small (1000 or so). If we increased the number of simulations to average across, spark might become a better tool. However, because of the poor performance, we left the spark portion as a standalone and did not integrate with the rest of the code.
+- Overall spark seems to be a bad tool for collating and averaging across the three polarization measurements when the number of time divisions is large (100 to 1000) and when the number of simulations run is relatively small (1000 or so). If we increased the number of simulations to average across, spark might become a better tool. However, because of the poor performance, we left the spark portion as a standalone and did not integrate with the rest of the code.
 
