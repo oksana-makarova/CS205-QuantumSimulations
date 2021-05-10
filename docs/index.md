@@ -18,6 +18,11 @@ We decided to implement our project using **MATLAB** since it's excellent at han
 
 In the process of writing code that simulates a quantum system, **we explored different functionalities of MATLAB Parallelization Toolbox and put together a [basic guide](https://oksana-makarova.github.io/CS205-QuantumSimulations/matlab_guide)**, so that other quantum reasearchers can build their own custom solution. 
 
+Our quantum simulator falls under big compute and big data. The application is a GPU-type application, due to the prevalence of matrix operations. Our code produces hundreds or thousands of 2^N by M polarizations from quantum states which we sort by polarization, then average using PySpark on AWS. The types of parallelism we use are both many-core and multi-node, since we use GPU acceleration as well as a PySpark cluster. Our parallel execution model is single program multiple data, with a single program running on multiple nodes and multiple cores. We use task-level parallelism, where interrelated tasks within the application run in parallel, in order to run many simulations simultaneously, and then postprocess. We also use loop level parallelism, which parallelizes iterations within a loop, in order to speed up solving for eigenvalues as well as the matrix multiplication.
+
+We use the MATLAB programming language, the academic cluster (with slurm job manager), and AWS for PySpark.
+
+
 
 ## Below is the list of the subpage links which were mentioned in the text:
 
