@@ -7,4 +7,4 @@ Team members:
 3. Shelley Cheng
 4. Oksana Makarova
 
-Please refer to our website (https://oksana-makarova.github.io/CS205-QuantumSimulations/), and the "Technical description of code" headings within each section for details about the files and their contents.
+Please refer to our website (https://oksana-makarova.github.io/CS205-QuantumSimulations/), and the "Technical description of code" headings within each subpage for details about the files and their contents.
