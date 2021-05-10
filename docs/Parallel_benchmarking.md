@@ -3,7 +3,7 @@
 Matlab and Bash files:
 - evolve_real_system.m - main file for simulating the physics of our system. Use this file to specify things such as number of spins, number of time steps, and type of evolution method (described below)
 - ED_evolve_block_diag.m - serial implementation of system evolution. No parallelization methods are introduced, and does not use GPU. Use for comparison with other evolution methods
-- get_couplings.m - !!!!
+- get_couplings.m - calculates coupling coefficients Jij for random spatial spin configuaration. It randomly places spins within a 3D (or 2D, 1D) box and calculates strength of interactions among them. The output is a N by N matrix of Jij coefficients. This code takes a very small fraction of total computational time, so we didn't work on parallelizing it.
 - gpuPar.sbatch - a bash script for submitting evolve_real_system.m to the academic cluster. 
 
 - Instructions: 
@@ -88,3 +88,4 @@ Reproducibility
 - Combining GPU arrays with the methods described is also challenging. Like cell arrays, GPU arrays require different syntax than vectors or matrices, and in the case of distributed arrays they are incompatible.
 
 
+#### [Back to home page](https://oksana-makarova.github.io/CS205-QuantumSimulations/)
