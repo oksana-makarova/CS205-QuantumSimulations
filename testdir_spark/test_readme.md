@@ -1,6 +1,6 @@
 Instructions for running spark test: 
 
-First, follow the steps in the main readme to run ED_evolve_csv.m on the acacdemic cluster for parameters NN=4, M=100, XXZCoeff=0, and mydir='testdir_spark', for 10 iterations. This will involve editing the files runtask.sh and parallel.batch as described in the main readme. 
+First, follow the steps in the main readme to run ED_evolve_csv.m on the academic cluster for parameters NN=4, M=100, XXZCoeff=0, and mydir='testdir_spark', for 10 iterations. This may involve editing the files runtask.sh and parallel.batch as described in the main readme. 
 
 After these simulations run, copy the testdir_spark directory into the code directory and run polz_avg_test_nospark.py or polarization_avg_spark.py as described in the main readme. 
 
