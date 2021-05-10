@@ -178,3 +178,4 @@ https://github.com/oksana-makarova/CS205-QuantumSimulations/tree/main/testdir_sp
 
 ## Final Thoughts
 - Overall PySpark seems to be a bad tool for collating and averaging across the three polarization measurements when the number of time divisions is large (100 to 1000) and when the number of simulations run is relatively small (1000 or so). If we increased the number of simulations to average across, PySpark might become a better tool. However, because of the poor performance, we left the PySpark portion as a standalone and did not integrate with the rest of the code.
+- For future work, it would be interesting to see if expanding the number of calculations performed per simulation to produce longer datasets, and reducing the number of timesteps could potentially lead to some advantage in using Spark. However, this seems unlikely unless the number of rows in the datasets became orders of magnitude larger. 
