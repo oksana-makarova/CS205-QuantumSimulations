@@ -24,8 +24,8 @@ In the process of writing code that simulates a quantum system, **we explored di
 ### [Physcial Model Description](https://oksana-makarova.github.io/CS205-QuantumSimulations/Model_Description)
 ### [MATLAB Parallelization Toolbox Guide](https://oksana-makarova.github.io/CS205-QuantumSimulations/matlab_guide)
 ### [Benchmarking of the original code](https://oksana-makarova.github.io/CS205-QuantumSimulations/serial_code)
-### [Benchmarking of the paralllelized code]()
-### [Big Data processing with PySpark]()
+### [Benchmarking of the parallelized code]()
+### [Big Data processing with PySpark](https://oksana-makarova.github.io/CS205-QuantumSimulations/spark)
 
 
 You can use the [editor on GitHub](https://github.com/oksana-makarova/CS205-QuantumSimulations/edit/om/docs/index.md) to maintain and preview the content for your website in Markdown files.
