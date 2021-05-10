@@ -59,6 +59,7 @@ With no specified load balancing (only MATLAB’s automatic load-scheduling), sp
   - Custom/manual load balancing involves indexing that works differently for odd or even N
 - Blocking here is unique and different from what was discussed in class, since we effectively remove large sections of the big initial matrix
   - Taking advantage of the math/physics of the problem, not deeply discussed in class
+- Load-balancing leads to a change of basis. This is relevant for subsequent steps, where altered basis requires different calculation steps that may reduce speed.
 
 # Final Thoughts
 - Improvements suggested: more mathematically rigorous blocking; limited by knowledge of factorials and combinatorics 
