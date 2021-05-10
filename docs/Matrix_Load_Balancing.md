@@ -65,3 +65,6 @@ With no specified load balancing (only MATLAB’s automatic load-scheduling), sp
 - Improvements suggested: more mathematically rigorous blocking; limited by knowledge of factorials and combinatorics 
 - Lessons learnt: load-balancing is important
 - Future work: run on gpus that can have more memory for larger problem size (potentially implement an AWS version)
+
+
+#### [Back to home page](https://oksana-makarova.github.io/CS205-QuantumSimulations/)
