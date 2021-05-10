@@ -53,7 +53,6 @@ With no specified load balancing (only MATLAB’s automatic load-scheduling), sp
 
 # Challenging Aspects
 
-# Challenging Aspects
 - The success of the code depends on whether there is enough memory to hold the largest matrix (this is non-negotiable, since diagonalization of a single block can’t be further blocked or split up; it’s a serial task within the largest block)
   - Maximum memory per gpu on cluster limits problem size to N=14
 - Load balancing aims to reduce communication overhead (between cpu and gpu memory), again limited by size of largest block and memory per gpu 
