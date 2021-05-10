@@ -2,7 +2,7 @@
 
 **Note 1**: the code described in this section is in our GitHub repo in code/serial directory. Description of the performed operation is described on the **paste** page. 
 
-**Note 2**: for this project, we had to write write a script for evolution of a quantum system with a block-diagonal matrix from scratch (`ED_evolve_block_diag_serial.m`), while the other two functions `(evolve_real_system_serial.m` and `get_couplings.m`) were inspired by code that was provided by Leigh Martin from Lukin group. Those two functions contain physical parameters of an actual quantum system and are used to make the new code compatible with the rest of the code base in the future.
+**Note 2**: for this project, we had to write write a script for evolution of a quantum system with a block-diagonal matrix from scratch (`ED_evolve_block_diag_serial.m`), while the other two functions (`evolve_real_system_serial.m` and `get_couplings.m`) were inspired by code that was provided by Leigh Martin from Lukin group. Those two functions contain physical parameters of an actual quantum system and are used to make the new code compatible with the rest of the code base in the future.
 
 This subpage describes **structure and testing of the base version of the code that doesn't contain any explicit parallelization or accelration**. However, the word serial in the title is taken in quotation marks because a lot of MATLAB built-in functions and operations are multithreaded by default and can run on multiple cores (but not nodes). Quoting MATLAB website:
 
@@ -62,14 +62,14 @@ If you would like to replicate our results, copy the three scripts from GitHub r
 
 Our cluster has pre-installed MATLAB, so in order to run our code in interactive mode, we used the following commands:
 
-```javascript
+```
 $ module load matlab/R2021a-fasrc01
 $ matlab -nodisplay -nojvm -nosplash
 ```
 
 Once MATLAB interactive session loaded, we used the following command to run and edit the scripts:
 
-```javascript
+```
 >> setenv('EDITOR', 'vim'); %allows you edit files in the interactive mode
 >> evolve_real_system_serial
 ```
@@ -82,6 +82,31 @@ Since by default MATLAB would try to use all available threads, we specify numbe
 Majority of the computations and timing is done in the `ED_evolve_block_diag_serial.m`, so refer to it for the details of the implementation. Also please note that there are a some commented out portions which allow for extra functionality, such as plotting of the results and evaluation of the problem without bringing it to block-diagonal form. Additionally, it's possible to test that function separately by generating a random `Jmat` matrix inside of it instead of providing it from the `get_couplings.m` function. 
 
 To evaluate code performance, we focus on speed up of the total evolution time and timings of the eigensolver and matrix multiplications for the largest block of the matrix(since they take up majority of the time). Note that we ensured that matrices are exactly the same for different numbers of cores by specifing a certain random seed number.
+
+Eigensolver timing (lines 164-166 of `ED_evolve_block_diag_serial.m`)
+```
+    blk_eig = tic;
+    [eigvecs_blk, eigvals_blk] = eig(full(Ham_blk), 'vector');
+    block_timing_eig(blk_num)= toc(blk_eig);
+```
+
+Matrix multiplications timing (lines 169-182 of `ED_evolve_block_diag_serial.m`)
+```
+    blk_evol = tic;
+    psiEig_i_blk = eigvecs_blk' * psi_blk; %coordinate transformation
+    psiEig_i_times_blk = repmat(psiEig_i_blk, 1, M);
+    eigs_ts_blk = eigvals_blk * t;
+    evolver_blk = exp(-1i * eigs_ts_blk);
+
+    %% evolving the state
+    psiEig_f_times_blk = psiEig_i_times_blk .* evolver_blk;
+
+    %convert the state back to original basis and normalize
+    psi_f_times_blk = eigvecs_blk * psiEig_f_times_blk;
+
+    psi_f_times_blk_tot(selected_indx, :) = psi_f_times_blk;
+    block_timing_evol(blk_num) = toc(blk_evol);
+```
 
 <img src="figs/serial_speed.png" alt="total time speedup" class="inline"/>
 
