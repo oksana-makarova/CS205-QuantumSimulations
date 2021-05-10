@@ -188,7 +188,7 @@ Tests are available >a  href "https://github.com/oksana-makarova/CS205-QuantumSi
 
 ## Challenging Aspects
 
-- It is worth noting that the overhead for starting up PySpark is quite great. When submitting only 10 or 100 csv files to be averaged on the AWS machine (plot above), it took about 10 seconds using PySpark in local mode but only 0.9 seconds using the serial pandas version polz_avg_test_nospark.py. And even worse, it took 53 seconds on the PySpark cluster with 4 cores and 2 workers. We finally did see speedup when averaging and sorting across 10,000 when using spark in local mode. 
+- It is worth noting that the overhead for starting up PySpark is quite great. When submitting only 10 or 100 csv files to be averaged on the AWS machine (plot above), it took about 10 seconds using PySpark in local mode but only 0.9 seconds using the serial pandas version polz_avg_test_nospark.py. And even worse, it took 53 seconds on the PySpark cluster with 4 cores and 2 workers. We finally did see speedup when averaging and sorting across 10,000 when using Spark in local mode on an AWS instance. 
 
 - It’s also important to note that the number of columns is restricted when using PySpark. When I tried running polarization_average_spark.py with 10,000 columns (meaning 10,000 time steps) I ran into an error that stated the constant pool had grown past JVM limit of 0xFFFF. It makes sense that the number of columns would be limited, though, since PySpark is more suited for datasets with many rows rather than many columns. 
 
