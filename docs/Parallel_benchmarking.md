@@ -71,6 +71,7 @@ We see that for larger numbers of spins, co-distributed / distributed arrays ach
 Since the distributed arrays trial was done without GPUs, combined with the fact that distributed arrays require communication amongst workers in the parallel pool and parfeval does not, this speed up shows that optimized communication reduces the bottleneck, implying that our matrix multiplication is a fine grained application. 
 
 Reproducibility
+
 <img src="figs/greg_4.png" alt="hi" class="inline" width="600"/>
 
 
