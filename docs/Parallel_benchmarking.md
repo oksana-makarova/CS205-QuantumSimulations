@@ -11,13 +11,13 @@ Upload entire repo to the academic cluster and cd into the ‘code’ folder. Op
 Number of gpus (if applicable)
 Size of memory
 Run gpuPar.sbatch on the cluster as: 
-	```
+```
 $ sbatch gpuPar.sbatch
 ```
-	Check outputs and errors (respectively via): 
-	```
-	$ vim output.out
-	$ vim output.err
+Check outputs and errors (respectively via): 
+```
+$ vim output.out
+$ vim output.err
 ```
 If you get the error “Batch script contains DOS line breaks (\r\n) instead of expected UNIX line breaks (\n)” the run the following command:
 ```
