@@ -4,6 +4,6 @@ With manual load balancing, speed up is > 1 for N > 9, which indicates that the 
 
 With no specified load balancing (only MATLAB’s automatic load-scheduling), speed up is > 1 for N > 10, which is a worse performance than the manual load balancing code. Additionally, for N = 10 and above, manual load balancing leads to better speed up. This shows that load balancing is important for improving performance.      
 
-<img src="figs/shelley_1.png" alt="hi" class="inline" width="600"/>
+<img src="figs/shelley_1.png" alt="hi" class="inline" width="550"/>
 <img src="figs/shelley_2.png" alt="hi" class="inline" width="600"/>
 <img src="figs/shelley_3.png" alt="hi" class="inline" width="600"/>
