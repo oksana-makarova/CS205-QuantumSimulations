@@ -14,6 +14,12 @@ The flowchart below provides the basic outline of the computation that is done i
 
 <img src="figs/flowchart.png" alt="hi" class="inline"/>
 
+Translated to code lines of `ED_evolve_block_diag_serial.m`:
+- Prepare initial state: 42-111
+- Diagonalization: 116 for the big matrix or 165 for blocks
+- Final state generation: 118-129 for the big matrix or 168-187 for blocks
+- Measurement: 192-218
+- Generation of random spin locations/disorder values is done in `get_couplings.m` and in lines 82-93
 
 ## XXZ Hamiltonians
 
