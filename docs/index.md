@@ -24,7 +24,7 @@ We use the MATLAB programming language, the academic cluster (with slurm job man
 
 
 
-## Below is the list of the subpage links which were mentioned in the text:
+## Below is the list of the subpage links (some of which were mentioned in the text):
 
 ### [Physical Model Description](https://oksana-makarova.github.io/CS205-QuantumSimulations/Model_Description)
 ### [MATLAB Parallelization Toolbox Guide](https://oksana-makarova.github.io/CS205-QuantumSimulations/matlab_guide)
@@ -32,7 +32,7 @@ We use the MATLAB programming language, the academic cluster (with slurm job man
 ### [Benchmarking of the parallelized code](https://oksana-makarova.github.io/CS205-QuantumSimulations/Parallel_benchmarking)
 ### [Big Data processing with PySpark](https://oksana-makarova.github.io/CS205-QuantumSimulations/spark)
 ### [GPU-accelerated diagonalization](https://oksana-makarova.github.io/CS205-QuantumSimulations/Matrix_Load_Balancing)
-
+### [Final presentation slides](https://oksana-makarova.github.io/CS205-QuantumSimulations/CS_205_Quantum_Simulations_final)
 
 You can use the [editor on GitHub](https://github.com/oksana-makarova/CS205-QuantumSimulations/edit/om/docs/index.md) to maintain and preview the content for your website in Markdown files.
 
