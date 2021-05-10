@@ -27,7 +27,7 @@ In the process of writing code that simulates a quantum system, **we explored di
 ### [Benchmarking of the parallelized code]()
 ### [Big Data processing with PySpark](https://oksana-makarova.github.io/CS205-QuantumSimulations/spark)
 
-
+### [Shelley](https://oksana-makarova.github.io/CS205-QuantumSimulations/Shelley)
 You can use the [editor on GitHub](https://github.com/oksana-makarova/CS205-QuantumSimulations/edit/om/docs/index.md) to maintain and preview the content for your website in Markdown files.
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
