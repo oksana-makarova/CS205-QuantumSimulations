@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+#SBATCH -J test
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=your_email@somethingharvard.com
+#SBATCH -o output_14.out
+#SBATCH -e output_14.err
+#SBATCH -p gpu 
+#SBATCH -n 1 
+#SBATCH --gres=gpu:3
+#SBATCH --mem 80000
+#SBATCH -t 0-0:30
+
+module load matlab
+
+matlab -nodisplay -nosplash < test2.m 

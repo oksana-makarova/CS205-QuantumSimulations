@@ -1,8 +1,10 @@
 import sys
 import os
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
+import time
+
+t1 = time.clock()
 
 #### Take as argument a directory name 
 directory = sys.argv[1]
@@ -11,10 +13,11 @@ directory = sys.argv[1]
 filelocs = []; 
 for file in os.listdir(directory):
     if file.endswith("data.csv"):
-        filelocs.append('test/' + file);
+        filelocs.append(directory + '/' + file);
 
-print(filelocs)
+#print(filelocs)
 
+### Read in CSVs to a single dataframe
 df = pd.read_csv(filelocs[0])
 for f in filelocs[1:]:
     #CSV structure will look like this:
@@ -25,52 +28,23 @@ for f in filelocs[1:]:
     ndat = pd.read_csv(f)
     df = pd.concat([df, ndat])
 
-print(df.head)
+#print(df.head)
 
 
 #### Average across time each polarization result
 dfavgs = df.groupby(by="simtype").mean()
 
-print(dfavgs)
+dfavgs = dfavgs.drop(columns='Simnum').drop(columns='Simtime')
 
-#### Plot polarization over time
-
-label_size = 20
-label_size2 = 20
-label_size3 = 20
-label_size4 = 15
-
-#Grab data 
-print(df.columns[3:])
-
+### save to CSV
+dfavgs.to_csv(directory + "/polarizations_pandas.csv")
 times = df.columns[3:]
-
-msmt_key = {
-    1 : "X",
-    2 : "Y",
-    3 : "Z",
-}
-
-fig2 = plt.figure()
-
-for i in msmt_key.keys(): 
-    mydfavgs = dfavgs[dfavgs.index ==i].values[0][2:]
-    print(mydfavgs)
-    plt.plot(times, mydfavgs, label = msmt_key[i])
+times = np.array(times.values)
+times = times.astype(np.float)
+np.savetxt(directory + "/times_pandas.csv", times, delimiter=",")
 
 
-plt.xlabel(r't', fontsize = label_size3)
-plt.ylabel(r'Polarization', fontsize = label_size3)
-plt.legend(fontsize = label_size4, ncol = 2)
-plt.ylim([0,1])
 
-# # plot
-plt.title(r'Averaged Polarization', fontsize = label_size3)
+t2 = time.clock()
 
-save_loc = 'plots'
-if not os.path.isdir(save_loc): 
-    os.mkdir(save_loc)
-plt.savefig(save_loc + "/polarization_plot_pandas.pdf",bbox_inches = "tight")
-
-plt.show()
-plt.close()
+print('Time elapsed: ' + str(t2-t1))

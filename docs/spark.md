@@ -1,5 +1,6 @@
 # PySpark for Postprocessing
 
+
 ## Technical Description of Code
 
 ### Associated Files
@@ -14,6 +15,7 @@
 Here are instructions for running the PySpark tests for the quantum simulator. More detailed reproducibility information is in the section below. 
 
 To use the academic cluster to run the CSV test for the quantum simulator and generate CSVs containing polarization information for processing in PySpark, log into the academic cluster, click Clusters-> _FAS-RC Shell Access, and clone the repo into the cluster. Cd into the code directory, then run on the terminal the following command:
+
 ```
 $ sbatch parallel.sbatch
 ```
@@ -47,14 +49,18 @@ Then download it from the file explorer on the academic cluster:
 
 <img src="figs/fileexplorer_oncluster.png" alt="hi" class="inline"/>
 
+
 Spin up an AWS instance following the steps in lab 9, and follow those steps to install PySpark locally as well. Choose a c4.xlarge. Use scp to copy testdir_spark.zip, polarization_avg_spark.py, and polz_avg_test_nospark.py to the AWS instance. Then run
+
 ```
 $ sudo apt-get install unzip
 $ unzip testdir_spark.zip
 $ sudo apt install python
 ```
 
+
 To run the serial, non-spark script polz_avg_test_nospark.py (the PySpark version does not use pandas! But the serial version does), we will need to install some python packages. In the command line, run
+
 ```
 $ sudo apt install python-pip
 $ pip install pandas
@@ -65,10 +71,13 @@ Finally, to submit the completely serial, pandas version as a test, use the comm
 ```
 $ python polz_avg_test_nospark.py testdir_spark
 ```
+
 And to submit the parallel PySpark version, use the command
+
 ```
 $ spark-submit polarization_avg_spark.py testdir_spark
 ```
+
 
 To change the number of local cores when running Spark locally, one can open polarization_avg_spark.py and modify the following line: 
 ```
@@ -81,6 +90,7 @@ conf = SparkConf().setMaster('local[n]').setAppName('Polarization Calculator')
 where n is the desired number of local cores. 
 
 Lastly, we can try running the code on a Spark cluster. To submit on a Spark cluster, follow the steps from lab 10. We use a m4.xlarge, as used in lab 10. SSH into the Spark cluster terminal, upload testdir_spark, and unzip, as explained above. The same libraries mentioned above will need to be loaded in. Open port 22 on the master security group by adding an SSH rule with port 22 and source 0.0.0.0/0, then scp to copy in polarization_avg_spark.py. 
+
 Run
 ```
 $ hadoop fs -put testdir_spark
@@ -99,6 +109,7 @@ With 2 and 4 modified as needed.
 
 csvs with the averaged polarizations, as well as with the times, will be saved in testdir_spark. 
 
+
 ## Performance Evaluation
 ### Parallel Speedup
 <img src="figs/spark_timing.png" alt="hi" class="inline"/>
@@ -115,6 +126,7 @@ The plot above shows the speedups (compared to the pandas version) for the PySpa
 ### Reproducibility 
 
 The preceding plots were produced using the academic cluster, then using AWS instances or an AWS Spark cluster. To time the Spark portions, I used the timer on my phone (since the code ran slow enough to make this feasible). 
+
 
 
 Reproducibility information for academic cluster portion: 
@@ -157,7 +169,9 @@ Scala code runner version 2.11.12 -- Copyright 2002-2017, LAMP/EPFL
 pyspark 2.2.0  
 
 
+
 Reproducibility information for AWS Spark cluster:
+
 Replicability information:
 I followed the steps in lab 10 to create a Spark cluster on Amazon EMR.  
 Model: Intel(R) Xeon(R) CPU E5-2686 v4
@@ -177,10 +191,13 @@ Java:
 openjdk version "1.8.0_282"  
 OpenJDK Runtime Environment (build 1.8.0_282-b08)  
 OpenJDK 64-Bit Server VM (build 25.282-b08, mixed mode)  
+
 pyspark 2.4.4  
+
 
 Latency:  65 ms  
 Bandwidth:  900 Hz  
+
 
 
 ## Tests
@@ -197,3 +214,4 @@ Tests are available >a  href "https://github.com/oksana-makarova/CS205-QuantumSi
 - For future work, it would be interesting to see if expanding the number of calculations performed per simulation (adding in additional observables besides total polarization to calculate at each timestep) to produce longer datasets, and reducing the number of timesteps could potentially lead to more advantage in using Spark. 
 
 #### [Back to home page](https://oksana-makarova.github.io/CS205-QuantumSimulations/)
+

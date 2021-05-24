@@ -77,6 +77,9 @@ ham = sparse(2^NN, 2^NN);
 %ham = zeros(2^NN, 2^NN);
 %% non-interacting part: disorder
 
+%Seed randn for reproducibility
+rng(simnum); 
+
 %added Normally distributed disorder of variance Delta
 for i = 1:NN
 %     ham = ham + (-1)^(i) * h1 * oper_at(i).sx ...
