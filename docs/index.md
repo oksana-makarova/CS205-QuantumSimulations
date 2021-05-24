@@ -16,50 +16,20 @@ Additional challenge is that the **output of the simulation is a wavefunction, w
 
 We decided to implement our project using **MATLAB** since it's excellent at handling matrix operations and allows us to capture physics of the problem. There are existing **Python libraries** for quantum simulations, such as [QuTiP](http://qutip.org/), and even cloud solutions that provide access to both classical and quantum simulators (check out amazing infrastructure that's provided by [IBM Q](https://www.ibm.com/quantum-computing/)). However, unlike Python, **MATLAB explicitly supports parallelization and accelerated computing with its own built-in librariesand hyperoptimized black-box functions**, so we think that MATLAB has more potential for fast computation of large systems. Additionally, [QuTiP relies on solving differential equations at different time points instead of solving eigenvalue problem](http://qutip.org/docs/3.1.0/guide/dynamics/dynamics-master.html), which makes it cubersome to simulate long-time system dyanmics, unlike in our solution where we can obtain system state at any time point with simple matrix multiplication.
 
-In the process of writing code that simulates a quantum system, **we explored different functionalities of MATLAB Parallelization Toolbox and put together a [basic guide](https://oksana-makarova.github.io/CS205-QuantumSimulations/matlab_guide)**, so that other quantum reasearchers can build their own custom solution. 
+Our quantum simulator falls under big compute and big data. The application is a GPU-type application, due to the prevalence of matrix operations. Our code produces hundreds or thousands of 2^N by M polarizations from quantum states which we sort by polarization, then average using PySpark on AWS. The types of parallelism we use are both many-core and multi-node, since we use GPU acceleration as well as a PySpark cluster. Our parallel execution model is single program multiple data, with a single program running on multiple nodes and multiple cores. We use task-level parallelism, where interrelated tasks within the application run in parallel, in order to run many simulations simultaneously, and then postprocess. We also use loop level parallelism, which parallelizes iterations within a loop, in order to speed up solving for eigenvalues as well as the matrix multiplication.
+
+We use the MATLAB programming language, the academic cluster (with slurm job manager), and AWS for PySpark.
 
 
-## Below is the list of the subpage links which were mentioned in the text:
 
-### [Physcial Model Description](https://oksana-makarova.github.io/CS205-QuantumSimulations/Model_Description)
-### [MATLAB Parallelization Toolbox Guide](https://oksana-makarova.github.io/CS205-QuantumSimulations/matlab_guide)
+
+## Below is the list of the subpage links (some of which were mentioned in the text):
+
+### [Physical Model Description](https://oksana-makarova.github.io/CS205-QuantumSimulations/Model_Description)
 ### [Benchmarking of the original code](https://oksana-makarova.github.io/CS205-QuantumSimulations/serial_code)
-### [Benchmarking of the parallelized code]()
+### [Benchmarking of the parallelized code](https://oksana-makarova.github.io/CS205-QuantumSimulations/Parallel_benchmarking)
 ### [Big Data processing with PySpark](https://oksana-makarova.github.io/CS205-QuantumSimulations/spark)
+### [GPU-accelerated diagonalization](https://oksana-makarova.github.io/CS205-QuantumSimulations/Matrix_Load_Balancing)
+### [Final presentation slides](https://github.com/oksana-makarova/CS205-QuantumSimulations/blob/19f8c64138725be9f18a5ed8678e434e2e1c14fe/docs/CS_205_Quantum_Simulations_final.pptx)
 
-### [Shelley](https://oksana-makarova.github.io/CS205-QuantumSimulations/Shelley)
-You can use the [editor on GitHub](https://github.com/oksana-makarova/CS205-QuantumSimulations/edit/om/docs/index.md) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/oksana-makarova/CS205-QuantumSimulations/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
